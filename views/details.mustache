@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ED-Market | All prices in one place</title>
+    <script src="./js/jquery-3.5.0.min.js"></script>
+    <script src="./js/popper.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/stylefix-details.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="..">ED-Market</a>
+    </nav>
+    <div class="container">
+        <div class="row justify-content-md-center align-middle">
+            <div class="col col-lg-16">
+                <h1>{{FullName}}</h1>
+                <table id="table" class="table table-striped table-dark">
+                    <thead>
+                        <tr>
+                            <th class="tablecell wide">Station</th>
+                            <th class="tablecell wide">System</th>
+                            <th class="tablecell">Disatance</th>
+                            <th class="tablecell">Current Price</th>
+                            <th class="tablecell">Demand</th>
+                            <th class="tablecell smalltab">L. Pad</th>
+                            <th class="tablecell date">Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#Stations}}
+                        <tr>
+                            <th>{{name}}</th>
+                            <td>{{system}}</td>
+                            <td>{{Distance}} Ls.</td>
+                            <td>{{Max}} Cr.</td>
+                            <td>{{Demand}}</td>
+                            <td>{{pad}}</td>
+                            <td>{{Updated}}</td>
+                        </tr>
+                        {{/Stations}}
+                    </tbody>
+                </table>
+                <div id="chart" class="col-lg-16"></div>
+            </div>
+        </div>
+        <script src="./js/bootstrap.js"></script>
+        <script src="./js/plotly-latest.min.js"></script>
+        <script>
+            const layout = {
+                plot_bgcolor: "#1F1F1F50",
+                paper_bgcolor: "#00000050",
+                xaxis: {
+                    gridcolor: '#FF6D0050',
+                    linecolor: '#000000',
+                },
+                yaxis: {
+                    gridcolor: '#FF6D0050',
+                    linecolor: '#000000',
+                },
+                title: '{{FullName}} price chart',
+                font: {
+                    size: 16,
+                    color: 'rgb(255,109,0)'
+                }
+            }
+            const options = {
+                scrollZoom: false,
+                showLink: false,
+                modeBarButtonsToRemove: ['toImage', 'zoom2d', 'pan', 'pan2d', 'autoScale2d'],
+                displayLogo: false,
+                displayModeBar: true,
+            };
+            let Plotdata = [{
+                x: {{{times}}},
+                y: {{{prices}}},
+                type: 'scatter',
+                line: {
+                    color: 'rgb(255, 109, 0)',
+                    width: 2
+                }
+            }]
+                Plotly.newPlot(document.querySelector("#chart"), Plotdata, layout, options);
+                $(".modebar").hide();
+            setInterval(() => {
+                $.get("{{Name}}/Chart", (data) => {
+                        Plotly.extendTraces(document.querySelector("#chart"), {
+                    x: [[data[data.length-1].date]],
+                    y: [[data[data.length-1].price]]
+                }, [0]) 
+
+
+            })
+            }, 1000*60);
+            setInterval(()=>{
+                $.get("{{Name}}/Partial", (data) => {
+                $("#table").html(data);
+            })},5000)
+            
+        </script>
+</body>
+
+</html>

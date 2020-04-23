@@ -1,0 +1,21 @@
+ .row{
+      margin-top: 25%;
+  }
+
+  
+.tablecell{
+ width: 10%;
+}
+.wide{
+  width: 22%;
+}
+.name{
+  width: 15%;
+
+}
+.date{
+  width: 11%;
+}
+tr{
+  height: 50px;
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ED-Market | All prices in one place</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/stylefix.css">
+    <script src="./js/jquery-3.5.0.min.js"></script>
+    <script src="./js/bootstrap.bundle.js"></script>
+
+</head>
+
+<body>
+<video id="backvid" src="/vid/back.mp4" loop autoplay muted></video>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">ED-Market</a>
+    </nav>
+    <script>
+        function copy(elem) {
+            elem.parentElement.children[1].select();
+            document.execCommand("copy");
+            $(elem).attr('data-original-title', "Coppied!").tooltip('show');
+            $(elem).attr('data-original-title', "Click to Copy!")
+        }
+    </script>
+    <div class="container">
+        <div class="row justify-content-md-center align-middle">
+            <div class="col col-lg-16">
+                <table id="table" class="table table-striped table-dark">
+                    <thead>
+                        <tr>
+                            <th class="tablecell name">Name</th>
+                            <th class="tablecell date">Last Update</th>
+                            <th class="tablecell">Average Price</th>
+                            <th class="tablecell">Current Price</th>
+                            <th class="tablecell wide">Station</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#Materials}}
+                        <tr>
+                            <th><a href="{{Name}}">{{fullName}}</a></th>
+                            <td>{{Update}}</td>
+                            <td>{{avg}} Cr.</td>
+                            <td>{{max}} Cr.
+                                {{#better}}
+                                <svg class="bi bi-caret-up-fill" width="1em" height="1em" viewBox="0 0 16 16"
+                                    fill="green" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 00.753-1.659l-4.796-5.48a1 1 0 00-1.506 0z" />
+                                </svg>
+                                {{/better}}
+                                {{#worse}}
+                                <svg class="bi bi-caret-down-fill" width="1em" height="1em" viewBox="0 0 16 16"
+                                    fill="red" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 01.753 1.659l-4.796 5.48a1 1 0 01-1.506 0z" />
+                                </svg>
+                                {{/worse}}
+                            </td>
+                            <td><a class="clickable" data-toggle="tooltip" title="Click to Copy!">{{DisplayStation}}</a><input style="width: 10px;opacity:0.0;" value="{{System}}"></td>
+                        </tr>
+                        {{/Materials}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            setInterval(() => {
+                $.get("/Partial", (data) => {
+                    $('[data-toggle="tooltip"]').tooltip('hide');
+                    $("#table").html(data);
+                    $('.clickable').click(function () {
+                        copy(this);
+                    });
+                    $('[data-toggle="tooltip"]').tooltip();
+                })
+            }, 5000)
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            $('.clickable').click(function () {
+                copy(this);
+            });
+        </script>
+</body>
+
+</html>
