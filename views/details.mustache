@@ -8,14 +8,16 @@
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/stylefix-details.css">
+
     <script src="./js/jquery-3.5.0.min.js"></script>
     <script src="./js/bootstrap.bundle.js"></script>
     <script src="./js/plotly-latest.min.js"></script>
+    <script src="./js/datatables.min.js"></script>
 </head>
 
 <body>
-<video id="backvid" src="/videos/back.mp4" loop autoplay muted preload></video>
-<div class = "backvid"></div>
+    <video id="backvid" src="/videos/back.mp4" loop autoplay muted preload></video>
+    <div class="backvid"></div>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="..">ED-Market</a>
     </nav>
@@ -29,7 +31,7 @@
                             <th class="tablecell wide">Station</th>
                             <th class="tablecell wide">System</th>
                             <th class="tablecell">Disatance</th>
-                            <th class="tablecell">Current Price</th>
+                            <th class="tablecell">Price/unit</th>
                             <th class="tablecell">Demand</th>
                             <th class="tablecell smalltab">L. Pad</th>
                             <th class="tablecell date">Updated</th>
@@ -53,7 +55,7 @@
             </div>
         </div>
         <script>
-                let maincolor=""
+            let maincolor = ""
 
             const layout = {
                 plot_bgcolor: "#1F1F1F50",
@@ -80,32 +82,37 @@
                 displayModeBar: true,
             };
             let Plotdata = [{
-                x: {{{times}}},
-                y: {{{prices}}},
-                type: 'scatter',
+                x: {{{ times }}},
+            y: {{{ prices }}},
+            type: 'scatter',
                 line: {
-                    color: 'rgb(58, 135, 236)',
+                color: 'rgb(58, 135, 236)',
                     width: 2
-                }
+            }
             }]
-                Plotly.newPlot(document.querySelector("#chart"), Plotdata, layout, options);
-                $(".modebar").hide();
+            Plotly.newPlot(document.querySelector("#chart"), Plotdata, layout, options);
+            $(".modebar").hide();
             setInterval(() => {
                 $.get("{{Name}}/Chart", (data) => {
-                        Plotly.extendTraces(document.querySelector("#chart"), {
-                    x: [[data[data.length-1].date]],
-                    y: [[data[data.length-1].price]]
-                }, [0]) 
+                    Plotly.extendTraces(document.querySelector("#chart"), {
+                        x: [[data[data.length - 1].date]],
+                        y: [[data[data.length - 1].price]]
+                    }, [0])
 
 
-            })
-            }, 1000*60);
-            setInterval(()=>{
-                $.get("{{Name}}/Partial", (data) => {
-                $("#table").html(data);
-            })},5000);
-            window.addEventListener('resize', ()=>{window.location.reload();});
+                })
+            }, 1000 * 60);
+
+            let table = $("#table").DataTable({
+                "ajax": "{{Name}}/Partial"
+            });
             
+            setInterval(function () {
+                table.ajax.reload(null,false);
+            }, 5000);
+            window.addEventListener('resize', () => { window.location.reload(); });
+            table.order( [ 3, 'desc' ] ).draw( false );
+
         </script>
 </body>
 

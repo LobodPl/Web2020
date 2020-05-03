@@ -1,5 +1,4 @@
 let sqlite3 = require('better-sqlite3');
-let cheerio = require('cheerio');
 let express = require('express');
 let mustacheExpress = require('mustache-express');
 let app = express();
@@ -140,13 +139,13 @@ function StartUp() {
 }
 StartUp();
 class material {
-    Max = 0;
-    Name = "";
-    Avg = 0;
-    Update = "00/00/00 12:00:00";
-    Station = "Test";
-    System = "Sol";
-    fullName = "";
+    Max: number;
+    Name: string;
+    Avg: number;
+    Update: string;
+    Station: string;
+    System: string;
+    fullName: string;
     better = () => { return this.Max > this.Avg };
     worse = () => { return this.Max < this.Avg };
     constructor(fullName, name) {
@@ -221,17 +220,15 @@ function showDetails(res, material, fullName) {
 
 function showDetailsPartial(res, material) {
     let db = new sqlite3('./db/stations.db');
-    let Stations = db.prepare("SELECT name,largestpad as pad,system,lsfromstar as distance," + (material.toLowerCase()) + "price as max,datetime(updated) as updated," + (material.toLowerCase()) + "demand as demand from Stations order by max DESC LIMIT 10").all();
+    let Stations = db.prepare("SELECT name,largestpad as pad,system,lsfromstar as distance," + (material.toLowerCase()) + "price as max,datetime(updated) as updated," + (material.toLowerCase()) + "demand as demand from Stations order by max DESC LIMIT 50").all();
     db.close();
+    let stations = [];
     Stations.forEach(element => {
-        element.Max = splitNumber(element.max);
-        element.Distance = splitNumber(element.distance);
-        element.Demand = splitNumber(element.demand);
-        element.Updated = DateDif(element.updated)
+        stations.push([element.name,element.system,splitNumber(element.distance),splitNumber(element.max),splitNumber(element.demand),element.pad, DateDif(element.updated)])
     });
-    res.render('partial', {
-        "Stations": Stations,
-        "Name": material
+    
+    res.json({
+        "data": stations
     });
 }
 
