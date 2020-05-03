@@ -5,13 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ED-Market | All prices in one place</title>
-    <script src="./js/jquery-3.5.0.min.js"></script>
-    <script src="./js/popper.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/stylefix-details.css">
+    <script src="./js/jquery-3.5.0.min.js"></script>
+    <script src="./js/bootstrap.bundle.js"></script>
+    <script src="./js/plotly-latest.min.js"></script>
 </head>
 
 <body>
+<video id="backvid" src="/videos/back.mp4" loop autoplay muted preload></video>
+<div class = "backvid"></div>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="..">ED-Market</a>
     </nav>
@@ -48,28 +52,28 @@
                 <div id="chart" class="col-lg-16"></div>
             </div>
         </div>
-        <script src="./js/bootstrap.js"></script>
-        <script src="./js/plotly-latest.min.js"></script>
         <script>
+                let maincolor=""
+
             const layout = {
                 plot_bgcolor: "#1F1F1F50",
                 paper_bgcolor: "#00000050",
                 xaxis: {
-                    gridcolor: '#FF6D0050',
-                    linecolor: '#000000',
+                    gridcolor: 'rgba(58, 135, 236,0.5)',
+                    linecolor: '#00000000',
                 },
                 yaxis: {
-                    gridcolor: '#FF6D0050',
-                    linecolor: '#000000',
+                    gridcolor: 'rgba(58, 135, 236,0.5)',
+                    linecolor: '#00000000',
                 },
                 title: '{{FullName}} price chart',
                 font: {
                     size: 16,
-                    color: 'rgb(255,109,0)'
+                    color: 'rgb(58, 135, 236)'
                 }
             }
             const options = {
-                scrollZoom: false,
+                scrollZoom: true,
                 showLink: false,
                 modeBarButtonsToRemove: ['toImage', 'zoom2d', 'pan', 'pan2d', 'autoScale2d'],
                 displayLogo: false,
@@ -80,7 +84,7 @@
                 y: {{{prices}}},
                 type: 'scatter',
                 line: {
-                    color: 'rgb(255, 109, 0)',
+                    color: 'rgb(58, 135, 236)',
                     width: 2
                 }
             }]
@@ -99,7 +103,8 @@
             setInterval(()=>{
                 $.get("{{Name}}/Partial", (data) => {
                 $("#table").html(data);
-            })},5000)
+            })},5000);
+            window.addEventListener('resize', ()=>{window.location.reload();});
             
         </script>
 </body>

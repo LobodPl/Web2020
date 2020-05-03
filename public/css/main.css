@@ -1,61 +1,65 @@
 :root {
-    --main-color: rgb(58, 135, 236);
-  } 
-  html{
-    height: 100%;
-    width: 100%;
-  }
-  body{
-    background: url(../img/back.png) no-repeat center center fixed;
-    content: '';
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    position: absolute;
-    background-attachment: fixed;
-    background-color: black;
-    background-size: 100% 100%;
-  }
+  --main-color: rgb(0, 135, 236);
+} 
+html{
+  height: 100%;
+  width: 100%;
+}
+body{
+  background: url(../img/back.png) no-repeat center center;
+  content: '';
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  background-attachment: fixed;
+  background-color: black;
+  background-size: cover;
+}
 
 .navbar-dark .navbar-brand{
-    color: var(--main-color);
+  color: var(--main-color);
 
 }
 
 .row a{
-	text-decoration: none;
-    color: var(--main-color);
+text-decoration: none;
+  color: var(--main-color);
 }
 .clickable,.clickable *{
-	cursor:pointer;
+cursor:pointer;
 }
 
 .table-dark {
-    color: var(--main-color);
-    background-color: rgba(0, 0, 0, 0.5);
+  color: var(--main-color);
+  background-color: rgba(0, 0, 0, 0.65);
 }
 
 h1{
-    color: var(--main-color);
-  margin: 10px;
+  color: var(--main-color);
+margin: 10px;
 }
 
 .bg-dark{
-    background: rgba(0, 0, 0, 0.5) !important;
+  background: rgba(0, 0, 0, 0.5) !important;
 }
 
-tr:nth-child(even) {background-color: rgba(26, 25, 25,0.5);}
+tr:nth-child(even) {background-color: rgba(44, 44, 44, 0.5);}
 
 .tablecell{
- width: 10%;
+width: 10%;
 }
 
 #backvid{
-  top: 0px;
-  left: 0px;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  position: absolute;
+top: 0px;
+left: 0px;
+height: 100%;
+width: 100%;
+object-fit: cover;
+position: fixed;
+}
+
+div.backvid{
+  position: fixed;
 }
