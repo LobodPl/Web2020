@@ -68,7 +68,9 @@
                 </table>
             </div>
         </div>
-        <script>
+    </div>
+    <footer class="bg-dark footer" style="position: fixed;width: 100%;bottom:0;"><center style="color: var(--main-color);">© Lobod 2020 | This site is using data from EDDN and EDSM.net</center></footer>
+    <script>
             setInterval(() => {
                 $.get("/Partial", (data) => {
                     $('[data-toggle="tooltip"]').tooltip('hide');
@@ -85,7 +87,7 @@
             $('.clickable').click(function () {
                 copy(this);
             });
-        </script>
+    </script>
 </body>
 
 </html>

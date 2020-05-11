@@ -56,6 +56,8 @@
                 <div id="chartAlt" class="col-lg-16"></div>
             </div>
         </div>
+    </div>
+    <footer class="bg-dark footer" style="position: fixed;width: 100%;bottom:0;"><center style="color: var(--main-color);">© Lobod 2020 | This site is using data from EDDN and EDSM.net</center></footer>
         <script>
             const layout = {
                 autosize: true,
@@ -126,14 +128,14 @@
                     if(data[data.length - 1].date != lastData){
                         Plotly.extendTraces(document.querySelector("#chart"), {
                         x: [[data[data.length - 1].date]],
-                        close: [[data[data.length - 1].close]],
-                        high: [[data[data.length - 1].high]],
-                        low: [[data[data.length - 1].low]],
-                        open: [[data[data.length - 1].open]]
+                        close: [[data[data.length - 1].priceEnd]],
+                        high: [[data[data.length - 1].priceMax]],
+                        low: [[data[data.length - 1].priceMin]],
+                        open: [[data[data.length - 1].priceStart]]
                     }, [0])
                     Plotly.extendTraces(document.querySelector("#chartAlt"), {
                         x: [[data[data.length - 1].date]],
-                        y: [[data[data.length - 1].close]]
+                        y: [[data[data.length - 1].priceEnd]]
                     }, [0])
                     lastData = data[data.length - 1].date;
                     }
