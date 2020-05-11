@@ -18,7 +18,7 @@
 <body>
     <video id="backvid" src="/videos/back.mp4" loop autoplay muted preload></video>
     <div class="backvid"></div>
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="..">ED-Market</a>
     </nav>
     <div class="container">
@@ -51,13 +51,21 @@
                         {{/Stations}}
                     </tbody>
                 </table>
+                <div id="chartswitch">Switch chart: <button id = "cswitch">Simple</button></div>
                 <div id="chart" class="col-lg-16"></div>
+                <div id="chartAlt" class="col-lg-16"></div>
             </div>
         </div>
         <script>
-            let maincolor = ""
-
             const layout = {
+                autosize: true,
+                height: 500,
+                margin: {
+                    l: 100,
+                    r: 30,
+                    b: 30,
+                    t: 100,
+                },
                 plot_bgcolor: "#1F1F1F50",
                 paper_bgcolor: "#00000050",
                 xaxis: {
@@ -68,7 +76,9 @@
                     gridcolor: 'rgba(58, 135, 236,0.5)',
                     linecolor: '#00000000',
                 },
-                title: '{{FullName}} price chart',
+                title:{
+                    text: "{{FullName}} price chart"
+                },
                 font: {
                     size: 16,
                     color: 'rgb(58, 135, 236)'
@@ -81,37 +91,74 @@
                 displayLogo: false,
                 displayModeBar: true,
             };
+            let lastData;
             let Plotdata = [{
-                x: {{{ times }}},
-            y: {{{ prices }}},
+            x: {{{ times }}},
+            close: {{{ close }}},
+            high: {{{ high }}},
+            low: {{{ low }}},
+            open: {{{ open }}},
+            type: 'candlestick',
+                line: {
+                color: 'rgb(58, 135, 236)',
+                    width: 2
+            },
+            decreasing: { line: { color: '#454d55' } },
+            increasing: { line: { color: 'rgb(58, 135, 236)' } }, 
+            }];
+            let Plotdata1 = [{
+            x: {{{ times }}},
+            y: {{{ close }}},
             type: 'scatter',
                 line: {
                 color: 'rgb(58, 135, 236)',
                     width: 2
-            }
+            },
+            decreasing: { line: { color: '#454d55' } },
+            increasing: { line: { color: 'rgb(58, 135, 236)' } }, 
             }]
+            lastData = Plotdata[0].x[Plotdata[0].x.length - 1];
             Plotly.newPlot(document.querySelector("#chart"), Plotdata, layout, options);
+            Plotly.newPlot(document.querySelector("#chartAlt"), Plotdata1, layout, options);
             $(".modebar").hide();
             setInterval(() => {
                 $.get("{{Name}}/Chart", (data) => {
-                    Plotly.extendTraces(document.querySelector("#chart"), {
+                    if(data[data.length - 1].date != lastData){
+                        Plotly.extendTraces(document.querySelector("#chart"), {
                         x: [[data[data.length - 1].date]],
-                        y: [[data[data.length - 1].price]]
+                        close: [[data[data.length - 1].close]],
+                        high: [[data[data.length - 1].high]],
+                        low: [[data[data.length - 1].low]],
+                        open: [[data[data.length - 1].open]]
                     }, [0])
-
-
+                    Plotly.extendTraces(document.querySelector("#chartAlt"), {
+                        x: [[data[data.length - 1].date]],
+                        y: [[data[data.length - 1].close]]
+                    }, [0])
+                    lastData = data[data.length - 1].date;
+                    }
                 })
             }, 1000 * 60);
 
             let table = $("#table").DataTable({
                 "ajax": "{{Name}}/Partial"
             });
-            
+
             setInterval(function () {
-                table.ajax.reload(null,false);
+                table.ajax.reload(null, false);
             }, 5000);
             window.addEventListener('resize', () => { window.location.reload(); });
-            table.order( [ 3, 'desc' ] ).draw( false );
+            table.order([3, 'desc']).draw(false);
+            $(".col-sm-12.col-md-5").toggleClass("col-md-5").toggleClass("col-md-4");
+            $("#cswitch").click(()=>{
+                if($("#cswitch").html() == "Simple"){
+                    $("#cswitch").html("Advance");
+                }
+                else $("#cswitch").html("Simple");
+                $("#chart").toggleClass("hidden");
+                $("#chartAlt").toggleClass("hidden");
+            })
+            $("#chartAlt").toggleClass("hidden");
 
         </script>
 </body>

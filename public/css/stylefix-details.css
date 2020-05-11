@@ -15,3 +15,36 @@ tr{
 .smalltab{
 	width: 8%;
 }
+.container{
+  margin-top: 50px;
+}
+.sorting{
+  cursor: pointer;
+}
+.sorting::after{
+  content: url(/img/sort_both.png);
+}
+.sorting_asc{
+  cursor: pointer;
+}
+.sorting_asc::after{
+  content: url(/img/sort_asc.png);
+}
+.sorting_desc{
+  cursor: pointer;
+}
+.sorting_desc::after{
+  content: url(/img/sort_desc.png);
+}
+#chartswitch{
+  color: var(--main-color);
+}
+#chartswitch> button{
+  color: var(--main-color);
+  background-color: rgba(0, 0, 0, 0.65);
+  border:  1px solid #454d55;
+  border-radius: 5px;
+}
+.hidden{
+  display: none;
+}
