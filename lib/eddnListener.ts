@@ -1,6 +1,6 @@
 let got = require('got');
 const zlib = require('zlib');
-const zmq = require('zeromq');
+const zmq = require('zeromq/v5-compat');
 const sock = zmq.socket('sub');
 const DB = require('./databaseEngine');
 
@@ -23,16 +23,26 @@ class EDDN{
                 let Station = DB.getStationByMarketId(data.message.marketId);
                 if (Station != undefined) {
                     console.log("================================\nUpdating " + data.message.stationName);
-                    DB.updateStationWithMarketId(data.message.marketId,BEN,LTD,MUS,PAI,SER,VO)
+                    if(Station.lsfromstar == 0){
+                        got("https://www.edsm.net/api-system-v1/stations?systemName=" + data.message.systemName.replace("+","%2B")).then(function (data2) {
+                            const j = JSON.parse(data2.body);
+                            let dist = 0;
+                            dist = Math.round(j.stations.find(function (x) { return x.marketId == data.message.marketId; }).distanceToArrival);
+                            console.log("================================\nMissing DIST found!! New dist: " + dist);
+                            DB.updateStationWithMarketIdDist(data.message.marketId,BEN,LTD,MUS,PAI,SER,VO,dist)
+                        });
+                    }else{
+                        DB.updateStationWithMarketId(data.message.marketId,BEN,LTD,MUS,PAI,SER,VO)
+                    }
                 } else {
                     console.log("================================\nCreating " + data.message.stationName);
-                    got("https://www.edsm.net/api-system-v1/stations?systemName=" + data.message.systemName).then(function (data2) {
+                    got("https://www.edsm.net/api-system-v1/stations?systemName=" + data.message.systemName.replace("+","%2B")).then(function (data2) {
                         const j = JSON.parse(data2.body);
                         let dist = 0;
                         let Lpad = "M";
-                        if (j.stations && j.stations.find(function (x) { return x.name == data.message.stationName; }) != null) {
-                            dist = Math.round(j.stations.find(function (x) { return x.name == data.message.stationName; }).distanceToArrival);
-                            if (j.stations.find(function (x) { return x.name == data.message.stationName; }).type != "Outpost") {
+                        if (j.stations && j.stations.find(function (x) { return x.marketId == data.message.marketId; }) != null) {
+                            dist = Math.round(j.stations.find(function (x) { return x.marketId == data.message.marketId; }).distanceToArrival);
+                            if (j.stations.find(function (x) { return x.marketId == data.message.marketId; }).type != "Outpost") {
                                 Lpad = "L";
                             }
                         } 
@@ -40,6 +50,10 @@ class EDDN{
                     });
                 }
             }
+        });
+        sock.on('disconnect',()=>{
+            sock.connect('tcp://eddn.edcd.io:9500');
+            sock.subscribe('');
         });
     }
 }

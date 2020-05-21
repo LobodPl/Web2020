@@ -3,8 +3,8 @@ const materials = require('./materials')
 class WebWorker {
     FullNames = ["Benitoite", "Low Temperature Diamonds", "Musgravite", "Painite", "Serendibite", "Void Opals"];
     prepareWeb(app) {
-        for (let i = 0; i < this.FullNames.length; i++) {
-            let fullName = this.FullNames[i];
+        for (let i = 0; i < FullNames.length; i++) {
+            let fullName = FullNames[i];
             app.get('/' + materials[i], function (req, res) {
                 WebService.showDetails(res, materials[i], fullName);
             });
@@ -17,6 +17,9 @@ class WebWorker {
         }
         app.get('/', function (req, res) {
             WebService.showIndex(res);
+        });
+        app.get('/Partial', function (req, res) {
+            WebService.showPartial(res);
         });
 
     }

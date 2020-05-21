@@ -1,7 +1,7 @@
 let sqlite3 = require('better-sqlite3');
 
-class DB {
-    Temp;
+class Database {
+    Temp = null;
     constructor() {
         if (this.Temp == null) {
             this.Temp = new DB1();
@@ -26,6 +26,12 @@ class DB1 {
     updateStationWithMarketId(marketId, BEN, LTD, MUS, PAI, SER, VO) {
         let db = this.openStationsDB();
         db.prepare("UPDATE Stations SET benprice=?,bendemand=?,ltdprice=?,ltddemand=?,musprice=?,musdemand=?,paiprice=?,paidemand=?,serprice=?,serdemand=?,voprice=?,vodemand=?,updated=julianday('now','+2 hours') where marketid = ?").run(BEN.sellPrice, BEN.demand, LTD.sellPrice, LTD.demand, MUS.sellPrice, MUS.demand, PAI.sellPrice, PAI.demand, SER.sellPrice, SER.demand, VO.sellPrice, VO.demand, marketId);
+        db.close();
+
+    }
+    updateStationWithMarketIdDist(marketId, BEN, LTD, MUS, PAI, SER, VO,dist) {
+        let db = this.openStationsDB();
+        db.prepare("UPDATE Stations SET benprice=?,bendemand=?,ltdprice=?,ltddemand=?,musprice=?,musdemand=?,paiprice=?,paidemand=?,serprice=?,serdemand=?,voprice=?,vodemand=?,lsfromstar=?,updated=julianday('now','+2 hours') where marketid = ?").run(BEN.sellPrice, BEN.demand, LTD.sellPrice, LTD.demand, MUS.sellPrice, MUS.demand, PAI.sellPrice, PAI.demand, SER.sellPrice, SER.demand, VO.sellPrice, VO.demand,dist, marketId);
         db.close();
 
     }
@@ -73,4 +79,4 @@ class DB1 {
     }
 }
 
-module.exports = new DB();
+module.exports = new Database();
