@@ -3,17 +3,18 @@ const zlib = require('zlib');
 const zmq = require('zeromq/v5-compat');
 const sock = zmq.socket('sub');
 const DB = require('./databaseEngine');
+const config = require('./constants');
 
 class EDDN{
     ConnectAndSubscribe() {
-        sock.connect('tcp://eddn.edcd.io:9500');
+        sock.connect(config.eddnSocketAddress);
         console.log('================================\nConnected to EDDN');
     
         sock.subscribe('');
     
         sock.on('message', topic => {
             let data = JSON.parse(zlib.inflateSync(topic));
-            if (data.$schemaRef == "https://eddn.edcd.io/schemas/commodity/3") {
+            if (data.$schemaRef == config.eddnSchemaAddress) {
                 let BEN = data.message.commodities.find(x => x.name == "benitoite") || { "sellPrice": 0, "demand": 0 };
                 let LTD = data.message.commodities.find(x => x.name == "lowtemperaturediamond") || { "sellPrice": 0, "demand": 0 };
                 let MUS = data.message.commodities.find(x => x.name == "musgravite") || { "sellPrice": 0, "demand": 0 };
@@ -24,7 +25,7 @@ class EDDN{
                 if (Station != undefined) {
                     console.log("================================\nUpdating " + data.message.stationName);
                     if(Station.lsfromstar == 0){
-                        got("https://www.edsm.net/api-system-v1/stations?systemName=" + data.message.systemName.replace("+","%2B")).then(function (data2) {
+                        got(config.edsmAddress + data.message.systemName.replace("+","%2B")).then(function (data2) {
                             const j = JSON.parse(data2.body);
                             let dist = 0;
                             dist = Math.round(j.stations.find(function (x) { return x.marketId == data.message.marketId; }).distanceToArrival);
@@ -36,7 +37,7 @@ class EDDN{
                     }
                 } else {
                     console.log("================================\nCreating " + data.message.stationName);
-                    got("https://www.edsm.net/api-system-v1/stations?systemName=" + data.message.systemName.replace("+","%2B")).then(function (data2) {
+                    got(config.edsmAddress + data.message.systemName.replace("+","%2B")).then(function (data2) {
                         const j = JSON.parse(data2.body);
                         let dist = 0;
                         let Lpad = "M";
@@ -52,7 +53,7 @@ class EDDN{
             }
         });
         sock.on('disconnect',()=>{
-            sock.connect('tcp://eddn.edcd.io:9500');
+            sock.connect(config.eddnSocketAddress);
             sock.subscribe('');
         });
     }
