@@ -1,16 +1,17 @@
-const materials = require('./materials');
-const DB = require('./databaseEngine');
-const material = require('./material');
-const Util = require('./util');
+export {};
+let materials = require('./materials');
+let DB = require('./databaseEngine');
+let material = require('./material');
+let Util = require('./util');
 
 class WebService {
-    showDetails(res, material, fullName) {
-        let End = [];
-        let Start = [];
-        let Low = [];
-        let High = [];
-        let times = [];
-        let rows = DB.selectChartDataByMaterial(material);
+    showDetails(res, material, fullName): void {
+        let End: any = [];
+        let Start: any = [];
+        let Low: any = [];
+        let High: any = [];
+        let times: any = [];
+        let rows: any = DB.selectChartDataByMaterial(material);
         rows.forEach(element => {
             times.push(element.date);
             Start.push(element.priceStart);
@@ -18,7 +19,7 @@ class WebService {
             Low.push(element.priceMin);
             High.push(element.priceMax);
         });
-        let Stations = DB.selectTop50StationsByMaterial(material);
+        let Stations: any = DB.selectTop50StationsByMaterial(material);
         Stations.forEach(element => {
             element.Max = Util.splitNumber(element.max);
             element.Distance = Util.splitNumber(element.distance);
@@ -36,7 +37,7 @@ class WebService {
             "low": JSON.stringify(Low),
         });
     }
-    showPartial(res) {
+    showPartial(res: any): void {
         let BEN = new material("Benitoite", "BEN");
         let LTD = new material("Low Temperature Diamonds", "LTD");
         let MUS = new material("Musgravite", "MUS");
@@ -53,7 +54,7 @@ class WebService {
             "Materials": [BEN, LTD, MUS, PAI, SER, VO]
         });
     }
-    getDataFromDB(obj) {
+    getDataFromDB(obj): typeof material {
         let material = obj.Name;
         let row = DB.selectBestPriceByMaterial(material);
         if (row != null) {
@@ -68,19 +69,19 @@ class WebService {
         }
         return obj;
     }
-    showDetailsPartial(res, material) {
+    showDetailsPartial(res: any, material): void {
 
         let Stations = DB.selectTop50StationsByMaterial(material);
-        let stations = [];
+        let stations: any[][] = [];
         Stations.forEach(element => {
-            stations.push([element.name, element.system, Util.splitNumber(element.distance), Util.splitNumber(element.max), Util.splitNumber(element.demand), element.pad, Util.DateDif(element.updated)])
+            stations.push([element.name, element.system, Util.splitNumber(element.distance), Util.splitNumber(element.max), Util.splitNumber(element.demand), Util.splitNumber((element.demand / 4).toFixed(0)), element.pad, Util.DateDif(element.updated)])
         });
 
         res.json({
             "data": stations
         });
     }
-    showIndex(res) {
+    showIndex(res: any): void {
         let BEN = new material("Benitoite", "BEN");
         let LTD = new material("Low Temperature Diamonds", "LTD");
         let MUS = new material("Musgravite", "MUS");
@@ -97,8 +98,8 @@ class WebService {
             "Materials": [BEN, LTD, MUS, PAI, SER, VO]
         });
     }
-    showChartdata(res, material) {
-        let rows =  DB.selectChartDataByMaterial(material);
+    showChartdata(res: any, material): void {
+        let rows: any[] = DB.selectChartDataByMaterial(material);
         res.send(rows)
     }
 }

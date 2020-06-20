@@ -33,23 +33,11 @@
                             <th class="tablecell">Disatance</th>
                             <th class="tablecell">Price/unit</th>
                             <th class="tablecell">Demand</th>
+                            <th class="tablecell">25%</th>
                             <th class="tablecell smalltab">L. Pad</th>
                             <th class="tablecell date">Updated</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {{#Stations}}
-                        <tr>
-                            <th>{{name}}</th>
-                            <td>{{system}}</td>
-                            <td>{{Distance}} Ls.</td>
-                            <td>{{Max}} Cr.</td>
-                            <td>{{Demand}}</td>
-                            <td>{{pad}}</td>
-                            <td>{{Updated}}</td>
-                        </tr>
-                        {{/Stations}}
-                    </tbody>
                 </table>
                 <div id="chartswitch">Switch chart: <button id = "cswitch">Simple</button></div>
                 <div id="chart" class="col-lg-16"></div>
@@ -151,7 +139,7 @@
             }, 5000);
             window.addEventListener('resize', () => { window.location.reload(); });
             table.order([3, 'desc']).draw(false);
-            $(".col-sm-12.col-md-5").toggleClass("col-md-5").toggleClass("col-md-4");
+            $(".col-sm-12.col-md-5").toggleClass("col-md-5").toggleClass("col-md-4").toggleClass("clickableth");
             $("#cswitch").click(()=>{
                 if($("#cswitch").html() == "Simple"){
                     $("#cswitch").html("Advance");

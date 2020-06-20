@@ -1,12 +1,11 @@
-var WebService = require('./webServices');
-var materials = require('./materials');
-var WebWorker = /** @class */ (function () {
-    function WebWorker() {
-        this.FullNames = ["Benitoite", "Low Temperature Diamonds", "Musgravite", "Painite", "Serendibite", "Void Opals"];
-    }
-    WebWorker.prototype.prepareWeb = function (app) {
-        var _loop_1 = function (i) {
-            var fullName = this_1.FullNames[i];
+export {};
+let WebService = require('./webServices');
+let materials = require('./materials');
+class WebWorker {
+    FullNames: string[] = ["Benitoite", "Low Temperature Diamonds", "Musgravite", "Painite", "Serendibite", "Void Opals"];
+    prepareWeb(app) : void {
+        for (let i = 0; i < this.FullNames.length; i++) {
+            let fullName = this.FullNames[i];
             app.get('/' + materials[i], function (req, res) {
                 WebService.showDetails(res, materials[i], fullName);
             });
@@ -16,10 +15,6 @@ var WebWorker = /** @class */ (function () {
             app.get('/' + materials[i] + '/Partial', function (req, res) {
                 WebService.showDetailsPartial(res, materials[i]);
             });
-        };
-        var this_1 = this;
-        for (var i = 0; i < this.FullNames.length; i++) {
-            _loop_1(i);
         }
         app.get('/', function (req, res) {
             WebService.showIndex(res);
@@ -27,7 +22,7 @@ var WebWorker = /** @class */ (function () {
         app.get('/Partial', function (req, res) {
             WebService.showPartial(res);
         });
-    };
-    return WebWorker;
-}());
+
+    }
+}
 module.exports = new WebWorker();

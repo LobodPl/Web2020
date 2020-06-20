@@ -1,3 +1,4 @@
+export {};
 const materials = require('./materials');
 const DB = require('./databaseEngine');
 const Markethistory = require('./prices');
@@ -6,7 +7,7 @@ class Stats {
     save1min(baseinterval) {
         let temparray = [];
         for (let i = 0; i < materials.length; i++) {
-            let material = materials[i];
+            let material: string = materials[i];
             let row = DB.selectBestPriceByMaterial(material);
             temparray.push(row.price);
         }

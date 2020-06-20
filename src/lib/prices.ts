@@ -1,25 +1,25 @@
-var DB = require('./databaseEngine');
-var materials = require('./materials');
-var Price = /** @class */ (function () {
-    function Price() {
-        this.MarketData = {};
-    }
-    Price.prototype.prepareMarketData = function () {
-        console.log("================================\nStarting new market session");
-        for (var i = 0; i < materials.length; i++) {
-            var material = materials[i];
-            var lastprice = DB.selectLastEndPriceByMaterial(material);
+export {};
+let DB = require('./databaseEngine')
+let materials = require('./materials');
+class Price{
+    MarketData = {};
+    prepareMarketData():void {
+        console.log("[MarketChart] -> Starting new market session");
+        for (let i = 0; i < materials.length; i++) {
+            let material = materials[i];
+            const lastprice = DB.selectLastEndPriceByMaterial(material);
             this.MarketData[material] = [parseInt(lastprice.price), 0, parseInt(lastprice.price), parseInt(lastprice.price)];
             if (this.MarketData[material][0] == 0) {
-                var row = DB.selectBestPriceByMaterial(material);
+                let row = DB.selectBestPriceByMaterial(material);
                 this.MarketData[material][0] = row.price;
             }
         }
-    };
-    Price.prototype.updatePrices = function (Prices) {
-        console.log("================================\nUpdating price table");
-        for (var i = 0; i < materials.length; i++) {
-            var material = materials[i];
+    }
+    
+    updatePrices(Prices:number):void {
+        console.log("[MarketChart] -> Updating price table");
+        for (let i = 0; i < materials.length; i++) {
+            let material = materials[i];
             if (Prices[i] < 2300000) {
                 if (this.MarketData[material][2] < Prices[i]) {
                     this.MarketData[material][2] = Prices[i];
@@ -29,10 +29,12 @@ var Price = /** @class */ (function () {
                 }
                 this.MarketData[material][1] = Prices[i];
             }
-            console.log(material + ":" + JSON.stringify(this.MarketData[material]));
+            console.log("[MarketChart] -> "+material + ":" + JSON.stringify(this.MarketData[material]));
+    
         }
-    };
-    Price.prototype.updatePrice = function (Price, material) {
+    }
+    
+    updatePrice(Price:number, material:string):void {
         if (Price < 2300000) {
             if (this.MarketData[material][2] < Price) {
                 this.MarketData[material][2] = Price;
@@ -42,7 +44,7 @@ var Price = /** @class */ (function () {
             }
             this.MarketData[material][1] = Price;
         }
-    };
-    return Price;
-}());
+    }
+}
+
 module.exports = new Price();

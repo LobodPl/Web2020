@@ -1,5 +1,5 @@
 .wide{
-  width: 25%;
+  width: 21%;
 }
 .date{
   width: 15%;
@@ -48,6 +48,11 @@ tr{
 .hidden{
   display: none;
 }
+td{
+  text-overflow:ellipsis !important;
+  overflow: hidden;
+}
+
 @media only screen and (min-width: 770px) {
   #table_wrapper{
     margin-bottom: -34px;

@@ -1,13 +1,12 @@
-let sqlite3 = require('better-sqlite3');
 let express = require('express');
 let mustacheExpress = require('mustache-express');
-const path = require('path');
-const expressVideo = require('express-video');
-const EDDN = require('./lib/eddnListener');
-const Stats = require('./lib/stats');
-const webWorker = require('./lib/webWorker');
+let path = require('path');
+let expressVideo = require('express-video');
+let EDDN = require('./lib/eddnListener');
+let Stats = require('./lib/stats');
+let webWorker = require('./lib/webWorker');
 
-const baseSaveinterval = 1000 * 60 * 60
+let baseSaveinterval = 1000 * 60 * 60
 
 class App {
     constructor(port: number) {
@@ -21,7 +20,7 @@ class App {
         webWorker.prepareWeb(app);
 
         app.listen(port, function () {
-            console.log('================================\nED-Market listening on port '+port+'!');
+            console.log('[WebServer] -> ED-Market listening on port '+port+'!');
         });
 
         EDDN.ConnectAndSubscribe();
